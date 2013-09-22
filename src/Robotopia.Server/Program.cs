@@ -10,19 +10,6 @@ namespace Robotopia.Server
 {
 	class Program
 	{
-		enum WorldRequest : byte
-		{
-			GetRange = 0x00,
-			Set = 0x01,
-		}
-
-		enum WorldResponse : byte
-		{
-			Ok = 0x00,
-			ErrorBadMessage = 0xA0,
-			ErrorUnrecognizedRequest = 0xA1
-		}
-
 		static void Main(string[] args)
 		{
 			var zmqContext = ZmqContext.Create();

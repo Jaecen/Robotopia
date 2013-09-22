@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Robotopia.Server
+namespace Robotopia
 {
-	struct Range
+	public struct Range
 	{
 		public readonly uint LengthOffset;
 		public readonly uint WidthOffset;
@@ -14,6 +10,9 @@ namespace Robotopia.Server
 		public readonly uint LengthRun;
 		public readonly uint WidthRun;
 		public readonly uint HeightRun;
+
+		public uint DataSize
+		{ get { return LengthRun * WidthRun * HeightRun; } }
 
 		public Range(uint lengthOffset, uint widthOffset, uint heightOffset, uint lengthRun, uint widthRun, uint heightRun)
 		{

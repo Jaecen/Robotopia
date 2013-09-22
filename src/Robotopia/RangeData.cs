@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Robotopia.Server
+namespace Robotopia
 {
-	class RangeData
+	public class RangeData
 	{
 		public readonly Range Range;
 		public readonly byte[] Data;

@@ -39,7 +39,7 @@ namespace Robotopia.Server
 					for(uint w = 0; w < Width; w++)
 					{
 						var index = (h * Length * Width) + (l * Width) + w;
-						Terrain[index] = h < height / 2 ? (byte)1 : (byte)0;
+						Terrain[index] = h < Height / 2 ? (byte)1 : (byte)0;
 					}
 		}
 
@@ -49,9 +49,9 @@ namespace Robotopia.Server
 			{
 				var preamble = worldFileReader.ReadBytes(4);
 				var version = worldFileReader.ReadUInt16();
-				var width = worldFileReader.ReadUInt32();
-				var height = worldFileReader.ReadUInt32();
-				var depth = worldFileReader.ReadUInt32();
+				Width = worldFileReader.ReadUInt32();
+				Length = worldFileReader.ReadUInt32();
+				Height = worldFileReader.ReadUInt32();
 
 				//TODO: 2GB cap
 				Terrain = worldFileReader.ReadBytes((int)(Length * Width * Height));
@@ -74,13 +74,40 @@ namespace Robotopia.Server
 
 		internal RangeData GetRange(Range range)
 		{
-			// Need to account for edges when getting the requested range
-			throw new NotImplementedException();
+			var effectiveRange = range.Constrain(Length, Width, Height);
+
+			var data = GetTerrainRangeIndicies(effectiveRange)
+				.Select(index => Terrain[index])
+				.ToArray();
+
+			return new RangeData(effectiveRange, data);
 		}
 
 		internal RangeData SetRange(Range range, byte value)
 		{
-			throw new NotImplementedException();
+			var effectiveRange = range.Constrain(Length, Width, Height);
+
+			var data = GetTerrainRangeIndicies(effectiveRange)
+				.Select(index => 
+				{
+					Terrain[index] = value;
+					return value;
+				})
+				.ToArray();
+
+			return new RangeData(effectiveRange, data);
+		}
+
+		IEnumerable<uint> GetTerrainRangeIndicies(Range range)
+		{
+			var lengthEnd = (range.LengthOffset + range.LengthRun);
+			var widthEnd = (range.WidthOffset + range.WidthRun);
+			var heightEnd = (range.HeightOffset + range.HeightRun);
+
+			for(uint h = range.HeightOffset; h < heightEnd; h++)
+				for(uint l = range.LengthOffset; l < lengthEnd; l++)
+					for(uint w = range.WidthOffset; w < widthEnd; w++)
+						yield return (h * Length * Width) + (l * Width) + w;
 		}
 	}
 }
